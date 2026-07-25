@@ -1,0 +1,3 @@
+(executables
+ (names clean_text test_csv test_json)
+ (libraries csv yojson))

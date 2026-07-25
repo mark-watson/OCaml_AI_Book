@@ -1,0 +1,3 @@
+(executables
+ (names simple conditionals if_then_else guards cases let_and_where
+        chained_calls map_examples my_colors))

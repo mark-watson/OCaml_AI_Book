@@ -1,0 +1,3 @@
+(executables
+ (names simple with_sparql)
+ (libraries simple_rdf))
