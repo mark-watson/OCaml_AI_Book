@@ -1,0 +1,4 @@
+(executables
+ (names command_line1 command_line2 game_loop1 game_loop2 read_text_file
+        read_text_file_error_handling)
+ (libraries unix))

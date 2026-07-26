@@ -1,0 +1,3 @@
+(library
+ (name sparql)
+ (libraries yojson uri))

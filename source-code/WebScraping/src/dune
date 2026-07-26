@@ -1,0 +1,3 @@
+(library
+ (name scraper)
+ (libraries lambdasoup))

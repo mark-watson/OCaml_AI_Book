@@ -1,0 +1,15 @@
+<http://knowledgebooks.com/test/sample>  <http://knowledgebooks.com/schema/containsPersonDbPediaLink>  <http://dbpedia.org/resource/John_Smith_(footballer_born_1855)> .
+<http://dbpedia.org/resource/John_Smith_(footballer_born_1855)>  <http://knowledgebooks.com/schema/aboutPersonName>  "John Smith" .
+<http://knowledgebooks.com/test/sample>  <http://knowledgebooks.com/schema/containsCompanyDbPediaLink>  <http://dbpedia.org/resource/Apple> .
+<http://knowledgebooks.com/test/sample>  <http://knowledgebooks.com/schema/containsCompanyDbPediaLink>  <http://dbpedia.org/resource/Apple_Inc.> .
+<http://knowledgebooks.com/test/sample>  <http://knowledgebooks.com/schema/containsCompanyDbPediaLink>  <http://dbpedia.org/resource/General_Motors> .
+<http://dbpedia.org/resource/Apple>  <http://knowledgebooks.com/schema/aboutCompanyName>  "Apple" .
+<http://dbpedia.org/resource/Apple_Inc.>  <http://knowledgebooks.com/schema/aboutCompanyName>  "Apple Computer" .
+<http://dbpedia.org/resource/General_Motors>  <http://knowledgebooks.com/schema/aboutCompanyName>  "General Motors" .
+<http://knowledgebooks.com/test/sample>  <http://knowledgebooks.com/schema/containsCountryDbPediaLink>  <http://dbpedia.org/resource/Brazil> .
+<http://knowledgebooks.com/test/sample>  <http://knowledgebooks.com/schema/containsCountryDbPediaLink>  <http://dbpedia.org/resource/Canada> .
+<http://dbpedia.org/resource/Brazil>  <http://knowledgebooks.com/schema/aboutCountryName>  "Brazil" .
+<http://dbpedia.org/resource/Canada>  <http://knowledgebooks.com/schema/aboutCountryName>  "Canada" .
+<http://knowledgebooks.com/test/sample>  <http://knowledgebooks.com/schema/news/category/>  <http://knowledgebooks.com/schema/topic/economics> .
+<http://knowledgebooks.com/test/sample>  <http://knowledgebooks.com/schema/news/category/>  <http://knowledgebooks.com/schema/topic/economics> .
+<http://knowledgebooks.com/test/sample>  <http://knowledgebooks.com/schema/summaryOf>  "Apple Computer and General Motors reported strong quarterly earnings. The economy and stock market reacted to the news." .

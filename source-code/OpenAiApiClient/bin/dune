@@ -1,0 +1,3 @@
+(executable
+ (name main)
+ (libraries openai cohttp-lwt-unix lwt.unix uri yojson tls-lwt))

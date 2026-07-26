@@ -1,0 +1,3 @@
+(executable
+ (name main)
+ (libraries gemini cohttp-lwt-unix lwt.unix uri yojson tls-lwt))

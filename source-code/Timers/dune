@@ -1,0 +1,3 @@
+(executable
+ (name timer_test)
+ (libraries unix))

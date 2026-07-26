@@ -1,0 +1,3 @@
+(executable
+ (name main)
+ (libraries scraper cohttp-lwt-unix lwt.unix uri tls-lwt))

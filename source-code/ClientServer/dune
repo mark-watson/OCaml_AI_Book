@@ -1,0 +1,3 @@
+(executables
+ (names server client)
+ (libraries lwt.unix))
