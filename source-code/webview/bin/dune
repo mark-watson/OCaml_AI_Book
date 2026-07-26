@@ -1,0 +1,3 @@
+(executables
+ (names counter hello)
+ (libraries webview yojson))

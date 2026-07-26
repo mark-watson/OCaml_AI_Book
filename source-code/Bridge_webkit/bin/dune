@@ -1,0 +1,3 @@
+(executable
+ (name main)
+ (libraries bwk dream yojson lwt.unix))

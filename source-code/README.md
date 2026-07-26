@@ -8,7 +8,7 @@ Install OCaml and dune with [opam](https://opam.ocaml.org/):
 
 ```bash
 opam install dune yojson cohttp-lwt-unix lwt tls-lwt uri \
-  alcotest qcheck csv lambdasoup caqti caqti-driver-sqlite3 ctypes owl dream
+  alcotest csv lambdasoup caqti caqti-lwt caqti-driver-sqlite3 dream
 ```
 
 ## Build and run one example
@@ -33,12 +33,9 @@ dune runtest
 | Cohttp + Lwt | HTTP client for REST and LLM APIs |
 | Dream | Web apps and REST servers |
 | Alcotest | Unit tests |
-| QCheck | Property tests for pure rule engines |
 | Csv | CSV read and write |
 | Lambdasoup | HTML scraping with CSS selectors |
-| Caqti | SQLite and PostgreSQL access |
-| Owl | Numerical arrays and dataframes |
-| Ctypes | C library bindings |
+| Caqti | SQLite access |
 
 ## License
 

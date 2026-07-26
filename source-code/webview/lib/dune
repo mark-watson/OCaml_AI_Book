@@ -1,0 +1,3 @@
+(library
+ (name webview)
+ (libraries dream yojson lwt.unix))
