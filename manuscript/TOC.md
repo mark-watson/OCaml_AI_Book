@@ -16,4 +16,5 @@
 - [Chapter 13: Search APIs: Brave Search](search.md)
 - [Chapter 14: Knowledge Graph Creator](kgn.md)
 - [Chapter 15: AI for Games](games.md)
-- [Chapter 16: Conclusions](conclusion.md)
+- [Chapter 16: Neural Networks from Scratch](neural_networks.md)
+- [Chapter 17: Conclusions](conclusion.md)

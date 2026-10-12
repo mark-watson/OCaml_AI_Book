@@ -1,1 +1,25 @@
 (lang dune 3.0)
+
+(name ollama_commandline)
+
+(generate_opam_files true)
+
+(source
+ (github mark-watson/ocaml_ai_book))
+
+(license Apache-2.0)
+
+(authors "Mark Watson")
+
+(maintainers "Mark Watson")
+
+(package
+ (name ollama_commandline)
+ (allow_empty)
+ (synopsis "A command-line client for a local [Ollama](https://ollama.com/) model")
+ (depends
+  (ocaml (>= 5.3))
+  dune
+  cohttp-lwt-unix
+  yojson
+  (alcotest :with-test)))

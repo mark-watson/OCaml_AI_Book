@@ -1,6 +1,6 @@
 # RDF Data Stores and SPARQL Queries
 
-RDF models data as triples: a subject, a predicate, and an object, like "Alice likes Bob." A set of triples is a graph, and SPARQL is the query language for graphs. This chapter builds a small RDF store and a SPARQL-style query engine from scratch, in `source-code/rdf_sparql/`, and then queries the public DBpedia endpoint over HTTP, in `source-code/SparqlClient/`. The first half needs no external library; it runs on the standard `Map` and `List`.
+RDF models data as triples: a subject, a predicate, and an object, like "Alice likes Bob." A set of triples is a graph, and SPARQL is the query language for graphs. This chapter builds a small RDF store and a SPARQL-style query engine from scratch, in `source-code/rdf_sparql/`, and then queries the public DBpedia endpoint over HTTP, in `source-code/sparql_client/`. The first half needs no external library; it runs on the standard `Map` and `List`.
 
 ## Modeling Triples and Queries
 
@@ -118,6 +118,10 @@ print_table [ "?a"; "?b" ] (run_query my_graph q3)
 
 The two patterns share the variables `?a` and `?b`, so the join finds only the mutual pairs: Alice and Bob like each other, so `(Alice, Bob)` and `(Bob, Alice)` come back. Building a query as a plain record is the clearest way to see what the engine does.
 
+The figure shows the whole graph. Each triple is an arrow from subject to object, labeled with its predicate. The join keeps a binding only when both patterns match, and only the two red arrows form such a pair. Charlie likes Bob, but Bob does not like Charlie back, so Charlie never appears in the result.
+
+![The social graph from `bin/simple.ml`. The red arrows answer the join query.](images/rdf_social_graph.png)
+
 ## Parsing SPARQL Text
 
 Writing queries as records is fine for a program, but a real query comes as text. The file `bin/with_sparql.ml` adds a small recursive descent parser that turns SPARQL text into the same `select_query` record. It walks the input with a cursor held in a `ref`:
@@ -159,7 +163,7 @@ A `?` starts a variable, a `<` starts an IRI, a `"` starts a literal, and anythi
 
 ## Querying DBpedia Over HTTP
 
-The second example, in `SparqlClient/`, queries a real endpoint. Public SPARQL servers accept a query in the URL and return results as JSON. The file `lib/sparql.ml` builds the URL and decodes the JSON. Building the URL is one call, because `Uri.add_query_params'` URL-encodes the query for you:
+The second example, in `sparql_client/`, queries a real endpoint. Public SPARQL servers accept a query in the URL and return results as JSON. The file `lib/sparql.ml` builds the URL and decodes the JSON. Building the URL is one call, because `Uri.add_query_params'` URL-encodes the query for you:
 
 ```ocaml
 let query_uri ?(endpoint = dbpedia) ?(format = "json") sparql =
@@ -213,7 +217,7 @@ dune runtest
 Then run the DBpedia client, which does need a connection:
 
 ```bash
-cd source-code/SparqlClient
+cd source-code/sparql_client
 dune exec ./bin/main.exe
 ```
 

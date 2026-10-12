@@ -1,3 +1,0 @@
-(executable
- (name main)
- (libraries db caqti-lwt caqti-lwt.unix caqti-driver-sqlite3 uri lwt.unix))

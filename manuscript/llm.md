@@ -7,7 +7,7 @@ This chapter builds command-line clients for three large language model APIs: a 
 3. Decode the response with Yojson, returning a `result`.
 4. Read the API key from the environment, and turn every failure into a clear message.
 
-There is no special SDK here. A REST endpoint plus a hand-written JSON codec is all you need, and doing it by hand shows exactly what goes over the wire. The examples are in `source-code/ollama_commandline/`, `source-code/OpenAiApiClient/`, and `source-code/gemini_commandline/`.
+There is no special SDK here. A REST endpoint plus a hand-written JSON codec is all you need, and doing it by hand shows exactly what goes over the wire. The examples are in `source-code/ollama_commandline/`, `source-code/openai_api_client/`, and `source-code/gemini_commandline/`.
 
 ## A Local Ollama Client
 
@@ -68,11 +68,11 @@ dune exec bin/main.exe -- "What is the capital of France?"
 dune exec bin/main.exe -- "Explain monads" "llama3.2"
 ```
 
-The `--` separates dune's arguments from your program's. With one argument it uses a default model; with two it uses the model you name.
+The `--` separates dune's arguments from your program's. With one argument it uses the default model, `qwen3.5:4b`, a small model that runs well on a laptop (pull it first with `ollama pull qwen3.5:4b`); with two it uses the model you name.
 
 ## An OpenAI Chat Client
 
-The OpenAI client, in `OpenAiApiClient/`, calls the chat-completion endpoint. The codec in `lib/openai.ml` is smaller because the request is simpler: a model and a list of messages:
+The OpenAI client, in `openai_api_client/`, calls the chat-completion endpoint. Its default model is `gpt-5-mini`, named once at the top of `lib/openai.ml` as `default_model`, a low-cost model that is plenty for the examples here. The codec is smaller than Ollama's because the request is simpler: a model and a list of messages:
 
 ```ocaml
 let chat_request_json ~model ~prompt =
@@ -117,7 +117,17 @@ let () =
 
 ## A Gemini Client
 
-The Gemini client, in `gemini_commandline/`, calls the `generateContent` endpoint. Its codec in `lib/gemini.ml` builds a request with optional temperature and token limits, using OCaml's optional arguments:
+The Gemini client, in `gemini_commandline/`, calls the `generateContent` endpoint. With Gemini the model name is part of the URL rather than the request body, so `lib/gemini.ml` names the model once and builds the URL from it:
+
+```ocaml
+let default_model = "gemini-3.5-flash"
+
+let endpoint_for model =
+  "https://generativelanguage.googleapis.com/v1beta/models/" ^ model
+  ^ ":generateContent"
+```
+
+Gemini 3.5 Flash is Google's current fast, low-cost model. When a newer one ships, changing `default_model` is the only edit, and a test checks the URL it produces. The codec builds a request with optional temperature and token limits, using OCaml's optional arguments:
 
 ```ocaml
 let request_json ?(temperature = 0.1) ?(max_output_tokens = 800) prompt =
@@ -199,7 +209,7 @@ dune exec bin/main.exe -- "What is the capital of France?"
 OpenAI and Gemini need an API key in the environment:
 
 ```bash
-cd source-code/OpenAiApiClient
+cd source-code/openai_api_client
 export OPENAI_API_KEY=sk-...
 dune exec ./bin/main.exe
 

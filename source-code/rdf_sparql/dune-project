@@ -1,1 +1,23 @@
 (lang dune 3.0)
+
+(name rdf_sparql)
+
+(generate_opam_files true)
+
+(source
+ (github mark-watson/ocaml_ai_book))
+
+(license Apache-2.0)
+
+(authors "Mark Watson")
+
+(maintainers "Mark Watson")
+
+(package
+ (name rdf_sparql)
+ (allow_empty)
+ (synopsis "An in-memory RDF store and SPARQL-style query engine")
+ (depends
+  (ocaml (>= 5.3))
+  dune
+  (alcotest :with-test)))

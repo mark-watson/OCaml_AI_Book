@@ -1,6 +1,6 @@
 # Search APIs: Brave Search
 
-Giving a program web search turns it from a closed system into one that can look things up. This chapter builds a client for the [Brave Search API](https://brave.com/search/api/), in `source-code/BraveSearch/`. It sends a query and prints the original query plus one line per result. The structure is the one from the last chapter: a pure codec you can test offline, and a thin Lwt wrapper for the HTTP call.
+Giving a program web search turns it from a closed system into one that can look things up. This chapter builds a client for the [Brave Search API](https://brave.com/search/api/), in `source-code/brave_search/`. It sends a query and prints the original query plus one line per result. The structure is the one from the last chapter: a pure codec you can test offline, and a thin Lwt wrapper for the HTTP call.
 
 ## Modeling a Result
 
@@ -124,7 +124,7 @@ let () =
 Set your API token and run a search:
 
 ```bash
-cd source-code/BraveSearch
+cd source-code/brave_search
 export BRAVE_SEARCH_API_KEY=your-token
 dune build
 dune exec ./bin/main.exe -- "OCaml programming"

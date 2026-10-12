@@ -1,6 +1,6 @@
 # AI for Games
 
-Games are a classic proving ground for AI, and they exercise OCaml in ways the earlier chapters do not: game state that changes over many turns, rules that must be exactly right, and agents that choose moves. This chapter covers three games of rising difficulty. Blackjack, in `source-code/Blackjack/`, shows immutable game state threaded through a console loop. Contract bridge, in `source-code/Bridge_game/`, adds an AI that bids and plays. Go, in `source-code/Go_playing_program/`, builds a full board engine with captures, ko, and scoring, plus a self-play agent.
+Games are a classic proving ground for AI, and they exercise OCaml in ways the earlier chapters do not: game state that changes over many turns, rules that must be exactly right, and agents that choose moves. This chapter covers three games of rising difficulty. Blackjack, in `source-code/blackjack/`, shows immutable game state threaded through a console loop. Contract bridge, in `source-code/bridge_game/`, adds an AI that bids and plays. Go, in `source-code/go_playing_program/`, builds a full board engine with captures, ko, and scoring, plus a self-play agent.
 
 A common thread runs through all three: the game state is an immutable record, and each move returns a new state rather than changing the old one. This is the OCaml way to write a game, and it makes the rules easy to test.
 
@@ -79,7 +79,7 @@ let deal_cards t player_indices =
 Because every function takes a table and returns a new one, the whole game is a chain of pure transforms. The console front end in `bin/main.ml` reads a key, applies the matching transform, and prints the new table. Play it:
 
 ```bash
-cd source-code/Blackjack
+cd source-code/blackjack
 dune build
 dune exec ./bin/main.exe
 ```
@@ -88,7 +88,7 @@ The controls are `h` to hit, `s` to stay, `1`/`2`/`3` to bet, `n` for a new hand
 
 ## Contract Bridge
 
-Bridge is a big step up. The engine in `Bridge_game/` deals hands, runs an auction where an AI bids using real conventions, plays out all thirteen tricks with an AI, and scores the result. It is split into modules for types, cards, bidding, play, scoring, and the engine state machine.
+Bridge is a big step up. The engine in `bridge_game/` deals hands, runs an auction where an AI bids using real conventions, plays out all thirteen tricks with an AI, and scores the result. It is split into modules for types, cards, bidding, play, scoring, and the engine state machine.
 
 The types in `src/types.ml` are ordinary variants, but their order is deliberate. OCaml's built-in `compare` orders variants by declaration order, so the constructors are listed low to high on purpose, and the engine gets correct card and bid comparisons for free:
 
@@ -137,13 +137,13 @@ done;
 `Engine.PMap` is a `Map` keyed by player, so `PMap.find actor !gs.hands` gets a player's cards. The state `gs` is a `ref` holding the immutable game record; each `apply_bid` returns a new record that replaces it. Run a full deal:
 
 ```bash
-cd source-code/Bridge_game
+cd source-code/bridge_game
 dune build
 dune exec ./bin/main.exe    # auto-plays one deal
 dune runtest
 ```
 
-The program prints the four hands, the auction bid by bid, the contract, the play trick by trick, and the final score. There is also a web version in `source-code/Bridge_webkit/` that serves the same engine through a Dream server, using the JavaScript bridge from Chapter 11 so you can bid and play as South against the AI.
+The program prints the four hands, the auction bid by bid, the contract, the play trick by trick, and the final score. There is also a web version in `source-code/bridge_webkit/` that serves the same engine through a Dream server, using the JavaScript bridge from Chapter 11 so you can bid and play as South against the AI.
 
 ## Go
 
@@ -160,7 +160,11 @@ type board = {
 }
 ```
 
-Stones connect into groups, and a group's liberties are its empty neighbors. Finding a group is a flood fill with an explicit stack, so it never overflows on a big board:
+Two ideas drive the rules, and the figure shows both. Stones of one color that touch along the grid lines form a **group**, and a group's **liberties** are the empty points next to it. A group with no liberties is captured. An **eye** is an empty point a group surrounds on its own. White cannot play into an eye, because the stone would have no liberties, so a group with two eyes never loses its last liberty and can never be captured.
+
+![Left: a white group and its liberties. Right: a black group with two eyes.](images/go_liberties_eyes.png)
+
+Finding a group is a flood fill with an explicit stack, so it never overflows on a big board:
 
 ```ocaml
 let flood_group grid sz color seed =
@@ -226,13 +230,69 @@ let choose_move b =
 
 The candidate moves are the empty points that are legal and are not the agent's own eyes. If any candidate captures, the agent picks from those; otherwise it picks any candidate at random. Avoiding its own eyes is the key to termination: a group with two eyes is alive, and by refusing to fill them the agent leaves both groups standing, so the game reaches a natural end instead of self-destructing.
 
-The driver in `bin/main.ml` self-plays a full 9x9 game, stopping after two passes in a row or a move cap, then prints the board and the score:
+The game loop lives in `src/selfplay.ml`. `Selfplay.play_game` starts from an empty board and asks the agent for moves until there are two passes in a row or a move cap is reached, then returns the final board and the move count. The driver in `bin/main.ml` plays one game and prints the board and the score:
 
 ```bash
-cd source-code/Go_playing_program
+cd source-code/go_playing_program
 dune build
 dune exec ./bin/main.exe
 dune runtest
 ```
 
-It prints the final board with `X` for black and `O` for white, the capture counts, and the area score. The full Go program this was ported from had a much larger AI stack with Monte Carlo tree search and joseki libraries; this port keeps the complete, correct board engine and a simple agent, which is enough to play and score a real game. That split is a good lesson to end on: get the rules exactly right in a small, tested engine, and you can grow the intelligence on top of it later.
+It prints the final board with `X` for black and `O` for white, the capture counts, and the area score. The full Go program this was ported from had a much larger AI stack with Monte Carlo tree search and joseki libraries; this port keeps the complete, correct board engine and a simple agent, which is enough to play and score a real game. That split is a good lesson: get the rules exactly right in a small, tested engine, and you can grow the intelligence on top of it later.
+
+### Parallel Playouts with Domains
+
+One way to grow that intelligence starts with **playouts**. A playout plays a game from some position to the end with a fast, light policy like our agent, and records who won. One playout says little. Thousands of them, averaged, give a usable estimate of how good a position is, and that estimate is the core of Monte Carlo tree search, the method behind the strongest Go programs before deep learning.
+
+Playouts also suit parallel hardware well. Each game is independent, and because our boards are persistent, two games never touch the same memory. OCaml 5 can run them truly in parallel with **domains**. A domain is an OCaml thread of execution that runs on its own CPU core with its own minor heap. `Domain.spawn f` starts `f` on a new domain and returns a handle, and `Domain.join` waits for it and returns `f`'s result.
+
+The program in `bin/playouts.ml` tallies the results of a batch of games:
+
+```ocaml
+type tally = { black : int; white : int; draws : int }
+
+let run_games n =
+  let rec loop i t =
+    if i = 0 then t
+    else
+      let final, _ = Selfplay.play_game () in
+      loop (i - 1) (add t (Selfplay.result_of final))
+  in
+  loop n empty
+```
+
+To run in parallel, it splits the games into one share per domain. It spawns a worker domain for every share but the first, runs the first share on the current domain so that domain does useful work too, then joins the workers and merges the tallies:
+
+```ocaml
+let run_parallel ~domains n =
+  let share k = (n / domains) + if k < n mod domains then 1 else 0 in
+  let workers =
+    List.init (domains - 1) (fun k ->
+        Domain.spawn (fun () -> run_games (share (k + 1))))
+  in
+  let mine = run_games (share 0) in
+  List.fold_left (fun t w -> merge t (Domain.join w)) mine workers
+```
+
+There are no locks anywhere. Each domain builds its own tally, and results move between domains only through `Domain.join`'s return value. Parallel code built this way, with independent work and results merged at the end, cannot have data races. The one piece of shared machinery is the random number generator the agent uses, and OCaml 5 already gives each domain its own `Random` state, split from its parent's when the domain is spawned.
+
+`Domain.recommended_domain_count ()` reports how many domains the machine can run well, usually its core count. Spawning many more domains than that makes the program slower, not faster. The program times a sequential run and a parallel run of the same number of games:
+
+```bash
+cd source-code/go_playing_program
+dune exec ./bin/playouts.exe -- 400
+```
+
+On a 15-core laptop it printed:
+
+```
+400 playouts on 9x9, 15 domains available
+sequential             Black 224  White 176  Draw  0   4.19s
+parallel (15 domains)  Black 189  White 211  Draw  0   0.68s
+speedup: 6.2x
+```
+
+The tallies differ between the two runs because the games are random. What matters is the speedup: a little over six times faster on 15 domains. It is less than 15 because the cores share memory bandwidth and the garbage collector does some work in coordinated pauses across all domains. That is typical for allocation-heavy code like this engine, which copies the board on every move. The test suite checks the parallel path as well, running games on three domains and making sure every result comes back.
+
+With a fast, parallel playout function, the next step toward a real Go player is a search that spends its playouts on the most promising moves. That search is Monte Carlo tree search, and it is a good project to build on this engine.

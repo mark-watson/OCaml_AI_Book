@@ -1,6 +1,6 @@
 # Symbolic Mathematics
 
-This chapter builds a small computer algebra library. It works with single-variable polynomials as data, not as floating-point approximations, so it can differentiate and integrate them exactly and print the result as algebra. The code lives in `source-code/SymbolicMath/` and splits into four modules: exact rationals, the data model, differentiation, and integration.
+This chapter builds a small computer algebra library. It works with single-variable polynomials as data, not as floating-point approximations, so it can differentiate and integrate them exactly and print the result as algebra. The code lives in `source-code/symbolic_math/` and splits into four modules: exact rationals, the data model, differentiation, and integration.
 
 Symbolic math is a good showcase for OCaml. Variant types model the shapes a mathematical object can take, records group the fields, and pattern matching pulls them apart. The result reads close to the math it describes.
 
@@ -206,7 +206,7 @@ let () =
 Build and run it, then run the Alcotest suite that checks the same cases:
 
 ```bash
-cd source-code/SymbolicMath
+cd source-code/symbolic_math
 dune build
 dune exec ./bin/main.exe
 dune runtest

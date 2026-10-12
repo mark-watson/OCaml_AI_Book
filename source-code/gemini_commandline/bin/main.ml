@@ -4,8 +4,7 @@
 
 open Lwt.Syntax
 
-let endpoint =
-  "https://generativelanguage.googleapis.com/v1/models/gemini-2.5-flash:generateContent"
+let endpoint = Gemini.endpoint_for Gemini.default_model
 
 let completion ~api_key prompt =
   let body = Yojson.Safe.to_string (Gemini.request_json prompt) in

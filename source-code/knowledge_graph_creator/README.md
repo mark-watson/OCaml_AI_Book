@@ -3,7 +3,7 @@
 OCaml port of the Haskell KGCreator. It reads a directory of `.txt` files (each
 with a matching `.meta` JSON file) and generates a knowledge graph as RDF
 triples (`.n3`) and Neo4j Cypher (`.cypher`). It reuses the NLP toolkit from the
-`NlpTool` example for entity detection, categorization, and summarization.
+`nlp_tool` example for entity detection, categorization, and summarization.
 
 ## Project layout
 
@@ -16,7 +16,7 @@ knowledge_graph_creator/
 │   ├── gen_triples.ml        <- RDF (N3) generation
 │   ├── gen_neo4j_cypher.ml   <- Neo4j Cypher generation
 │   └── apis.ml               <- batch directory processing
-├── data/                     <- TSV corpora (copied from NlpTool)
+├── data/                     <- TSV corpora (copied from nlp_tool)
 ├── test_data/                <- sample.txt and sample.meta
 ├── bin/main.ml
 └── test/
@@ -36,7 +36,7 @@ This writes `out.n3` and `out.cypher`. `make clean` removes them.
 
 ## Notes on the Haskell to OCaml port
 
-- The NLP modules and TSV corpora are shared with the `NlpTool` example (the
+- The NLP modules and TSV corpora are shared with the `nlp_tool` example (the
   Haskell version likewise kept its own copies).
 - `.meta` files are parsed with Yojson rather than `Text.JSON.Generic`.
 - The RDF and Cypher generators are direct string builders, matching the Haskell

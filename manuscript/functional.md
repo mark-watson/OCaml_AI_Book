@@ -1,10 +1,10 @@
 # Functional Patterns: State, Laziness, Timing, and Debugging
 
-OCaml gives you a lot for free, but a few patterns that other functional languages build in you write yourself. That is a feature: the pieces are small, and seeing them in full teaches you how they work. This chapter builds three of them: a `State` module for threading state through pure code, lazy sequences for streams you compute on demand, and a timeout that can cut off a long computation. Along the way you get a trace helper for debugging and a small benchmark timer.
+OCaml gives you a lot for free, but a few patterns that other functional languages build in you write yourself. That is a feature: the pieces are small, and seeing them in full teaches you how they work. This chapter builds three of them: a `State` module for threading state through pure code (then the same thing again with OCaml 5 effect handlers), lazy sequences for streams you compute on demand, and a timeout that can cut off a long computation. Along the way you get a trace helper for debugging and a small benchmark timer.
 
 ## A State Module
 
-Some functional languages ship a `State` monad that carries a value through a chain of steps without a mutable variable. OCaml has no such built-in, so `source-code/StateMonad/state1.ml` defines one. The whole module is under twenty lines:
+Some functional languages ship a `State` monad that carries a value through a chain of steps without a mutable variable. OCaml has no such built-in, so `source-code/state_monad/state1.ml` defines one. The whole module is under twenty lines:
 
 ```ocaml
 module State = struct
@@ -75,6 +75,89 @@ Running the demos gives:
 
 The first two lines are the two `increment_state` versions: start at 1, return the old value 1, leave state 2. The third applies `bump_vals` to `(1, 2)` to get `(2, 4)`. The last two show `eval_state` (the value, 1) and `exec_state` (the state, 2). This `State` module is enough for any place you want to pass state through pure code without a global.
 
+## The Same State with Effect Handlers
+
+The `State` module is the classic functional answer, and it works in any version of OCaml. OCaml 5 adds a second answer: **effect handlers**. An effect is like an exception that can be resumed. Code *performs* an effect to ask a question, a *handler* further up the call stack answers it, and the code carries on from where it stopped with the answer in hand. State is the standard first example, so `source-code/state_monad/state_effects.ml` rebuilds the previous section's program with effects.
+
+First declare the effects. `Effect.t` is an extensible type, so you add constructors to it the way you would add exceptions. The type parameter is the type of the answer: `Get` is answered with a state, `Put` with unit. The functor lets one definition work for any state type:
+
+```ocaml
+module State (S : sig type t end) = struct
+  type _ Effect.t += Get : S.t Effect.t | Put : S.t -> unit Effect.t
+
+  let get () = Effect.perform Get
+  let put n = Effect.perform (Put n)
+```
+
+Now `get` and `put` are ordinary functions. They perform an effect and return its answer. The handler that supplies the answers is `run_state`:
+
+```ocaml
+  let run_state (f : unit -> 'a) (init : S.t) : 'a * S.t =
+    let step =
+      match f () with
+      | v -> fun s -> (v, s)
+      | effect Get, k -> fun (s : S.t) -> Effect.Deep.continue k s s
+      | effect (Put s'), k -> fun _ -> Effect.Deep.continue k () s'
+    in
+    step init
+```
+
+A `match` with `effect` cases, new syntax in OCaml 5.3, runs `f ()` and installs a handler around it. The first case handles a normal return. Each `effect` case runs when `f` performs that effect, and it receives `k`, the **continuation**: the rest of `f`'s computation, paused at the `perform`. `Effect.Deep.continue k x` resumes it with `x` as the answer.
+
+The handler reuses the monad's idea: every case returns a function from a state to a `(result, state)` pair, which is the monad's `('s, 'a) t` type, so the state is threaded through without a mutable variable:
+
+- On a normal return with value `v`, the final step is `fun s -> (v, s)`.
+- On `Get`, the step receives the current state `s`, resumes the computation with `s` as `get`'s answer, and passes `s` on unchanged to whatever comes next. That is why `s` appears twice.
+- On `Put s'`, the step ignores the old state, resumes with `()`, and passes the new state `s'` along.
+
+These are **deep** handlers: when `continue k` resumes the computation, the same handler is still installed around it, so the next `get` or `put` lands back in `run_state`. The `(s : S.t)` annotation is needed because inside an `effect` case the type checker knows the answer type only locally, and the annotation tells it which state type the step takes. `eval_state`, `exec_state`, and `map_state` are one-liners on top of `run_state`, as before.
+
+The gain is in how you write stateful code. Here is `increment_state` again:
+
+```ocaml
+module IntState = State (struct type t = int end)
+open IntState
+
+let increment_state () =
+  let n = get () in
+  put (n + 1);
+  n
+```
+
+There is no `let*`, no `return`, and no special type. It is plain sequential OCaml, and it gives the same results as the monadic version:
+
+```
+(1,2)
+(2,4)
+1
+2
+```
+
+The bigger difference shows up when stateful code meets ordinary library functions. `List.iter` knows nothing about state, but with effects its callback can still use `get` and `put`:
+
+```ocaml
+let count_long_words words =
+  List.iter (fun w -> if String.length w > 3 then put (get () + 1)) words
+```
+
+Running `exec_state (fun () -> count_long_words [...]) 0` on five words prints `long words: 3`. With the monad you cannot pass a stateful step to `List.iter`, because `List.iter` expects a function returning `unit`, not a `('s, unit) t`. You would have to write a monadic `iter` first, and a monadic version of every other higher-order function you want to use. Effect handlers exist to solve this problem: monadic types that spread through a code base.
+
+So which should you use? The comparison comes down to a few points:
+
+- **Types.** The monad puts state in the type, so `('s, 'a) t` tells a reader the function is stateful. With effects, `increment_state` has type `unit -> int`, and nothing in the type says it needs a handler. If you call it without one, OCaml raises `Effect.Unhandled` at run time.
+- **Composition.** Effects compose with existing code, as `List.iter` showed. The monad needs its own version of each combinator.
+- **Portability.** The monad is plain functions and works on any OCaml. Effects need OCaml 5, and the `effect` pattern syntax needs 5.3 or later.
+
+For a small, self-contained computation the monad is clear and explicit. When state, or another effect such as logging, a generator, or cooperative scheduling, has to pass through code you did not write, effect handlers are the OCaml 5 way to do it. Concurrency libraries such as Eio use them to implement lightweight threads.
+
+Run both versions from the project directory:
+
+```bash
+cd source-code/state_monad
+dune exec ./state1.exe
+dune exec ./state_effects.exe
+```
+
 ## Lazy Sequences and Trace Debugging
 
 The next two examples share a tool: OCaml's `Seq`, a lazy sequence you compute one element at a time. A `Seq.t` is a function you call to get the next element, so an "infinite" sequence like `Seq.ints 2` (2, 3, 4, ...) is fine: you only ever force the part you take.
@@ -120,7 +203,7 @@ The trace lines go to stderr and the final list, `[2; 3; 5; 7; 11]`, goes to std
 
 ## Timing and Timeouts
 
-The file `source-code/Timers/timer_test.ml` reuses the same lazy sieve and adds two tools every performance study needs: a benchmark timer and a hard timeout.
+The file `source-code/timers/timer_test.ml` reuses the same lazy sieve and adds two tools every performance study needs: a benchmark timer and a hard timeout.
 
 The timer wraps a function, prints how long it took, and returns its value:
 

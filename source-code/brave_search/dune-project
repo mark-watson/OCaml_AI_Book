@@ -1,0 +1,28 @@
+(lang dune 3.0)
+
+(name brave_search)
+
+(generate_opam_files true)
+
+(source
+ (github mark-watson/ocaml_ai_book))
+
+(license Apache-2.0)
+
+(authors "Mark Watson")
+
+(maintainers "Mark Watson")
+
+(package
+ (name brave_search)
+ (allow_empty)
+ (synopsis "The Brave Search API")
+ (depends
+  (ocaml (>= 5.3))
+  dune
+  cohttp-lwt-unix
+  lwt
+  tls-lwt
+  uri
+  yojson
+  (alcotest :with-test)))

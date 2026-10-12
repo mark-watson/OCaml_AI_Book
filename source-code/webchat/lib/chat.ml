@@ -2,6 +2,13 @@
    single-page HTML. Keeping these out of the Dream handler lets the tests run
    without a server or an API key. *)
 
+(* The model is named once here; change it to try another Gemini model. *)
+let default_model = "gemini-3.5-flash"
+
+let endpoint_for model =
+  "https://generativelanguage.googleapis.com/v1beta/models/" ^ model
+  ^ ":generateContent"
+
 let gemini_request prompt =
   `Assoc
     [ ( "contents",

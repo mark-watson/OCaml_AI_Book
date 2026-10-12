@@ -11,7 +11,7 @@ OCaml programs are built with two tools: **opam**, the package manager, and **du
 ```bash
 brew install opam        # macOS; see opam.ocaml.org for Linux
 opam init                # one-time setup
-opam switch create 5.2.0 # install a recent OCaml 5.x compiler
+opam switch create 5.5.1 # install a current OCaml 5.x compiler
 eval $(opam env)         # put that compiler on your PATH
 ```
 
@@ -30,7 +30,7 @@ opam install yojson cohttp-lwt-unix lwt tls-lwt uri \
 
 ## A First Program
 
-Every example in this book is a dune project. The smallest one is a single source file plus a **dune** file that tells the build tool what to make. Here is `source-code/Pure/simple.ml`:
+Every example in this book is a dune project. The smallest one is a single source file plus a **dune** file that tells the build tool what to make. Here is `source-code/pure/simple.ml`:
 
 ```ocaml
 (* Basic function definition *)
@@ -54,7 +54,7 @@ The **dune** file in that directory lists the programs to build:
 Build and run it:
 
 ```bash
-cd source-code/Pure
+cd source-code/pure
 dune build
 dune exec ./simple.exe
 ```
@@ -79,7 +79,7 @@ The type `int -> int -> int` reads as "takes an int and an int, returns an int."
 
 ## Pattern Matching and Recursion
 
-OCaml code takes data apart with pattern matching. The file `source-code/Pure/conditionals.ml` shows the core moves over lists. A list is either empty, `[]`, or a head joined to a tail, `x :: xs`.
+OCaml code takes data apart with pattern matching. The file `source-code/pure/conditionals.ml` shows the core moves over lists. A list is either empty, `[]`, or a head joined to a tail, `x :: xs`.
 
 ```ocaml
 let head' = function
@@ -119,7 +119,7 @@ dune exec ./conditionals.exe
 
 ## if / then / else Is an Expression
 
-In OCaml, `if` is an expression that returns a value, not a statement. Both branches must have the same type. From `source-code/Pure/if_then_else.ml`:
+In OCaml, `if` is an expression that returns a value, not a statement. Both branches must have the same type. From `source-code/pure/if_then_else.ml`:
 
 ```ocaml
 let age_to_string age =
@@ -130,7 +130,7 @@ Because `if` returns a value, you use its result directly. There is no need for 
 
 ## Branching and Option Values
 
-OCaml has no guard syntax on plain definitions, so you branch with nested `if` or with `match`. The file `source-code/Pure/guards.ml` shows both, and it introduces the `option` type, OCaml's safe stand-in for a missing value:
+OCaml has no guard syntax on plain definitions, so you branch with nested `if` or with `match`. The file `source-code/pure/guards.ml` shows both, and it introduces the `option` type, OCaml's safe stand-in for a missing value:
 
 ```ocaml
 let spaceship n =
@@ -150,7 +150,7 @@ An `option` is either `Some value` or `None`. The type system forces you to hand
 
 ## match Expressions
 
-The `match ... with` form is the general tool for choosing a result by shape. From `source-code/Pure/cases.ml`:
+The `match ... with` form is the general tool for choosing a result by shape. From `source-code/pure/cases.ml`:
 
 ```ocaml
 let number_opinion n =
@@ -164,7 +164,7 @@ The compiler warns you if a match does not cover every case, which catches a who
 
 ## let Bindings for Local Values
 
-OCaml has no `where` clause. You name intermediate values with `let ... in`. The name is in scope for the expression after `in`. From `source-code/Pure/let_and_where.ml`:
+OCaml has no `where` clause. You name intermediate values with `let ... in`. The name is in scope for the expression after `in`. From `source-code/pure/let_and_where.ml`:
 
 ```ocaml
 let funny_summation w x y z =
@@ -186,7 +186,7 @@ That builds a list of pairs: `(0,0)`, `(1,10)`, `(2,20)`, and so on. A pair is w
 
 ## Composing and Applying Functions
 
-Two operators help you write pipelines without extra parentheses. `@@` applies a function to an argument and is right-associative, so `f @@ g @@ x` means `f (g x)`. The pipe `|>` sends a value into a function, so `x |> f |> g` means `g (f x)`. From `source-code/Pure/chained_calls.ml`:
+Two operators help you write pipelines without extra parentheses. `@@` applies a function to an argument and is right-associative, so `f @@ g @@ x` means `f (g x)`. The pipe `|>` sends a value into a function, so `x |> f |> g` means `g (f x)`. From `source-code/pure/chained_calls.ml`:
 
 ```ocaml
 let double_odd_elements =
@@ -210,7 +210,7 @@ let new_list2 = (compose times10_elements double_odd_elements) a_list in
 
 ## The Map Functor
 
-OCaml's standard `Map` is a functor: you apply it to a key module to get a map type for that key. The file `source-code/Pure/map_examples.ml` builds a string-keyed map:
+OCaml's standard `Map` is a functor: you apply it to a key module to get a map type for that key. The file `source-code/pure/map_examples.ml` builds a string-keyed map:
 
 ```ocaml
 module StringMap = Map.Make (String)
@@ -228,7 +228,7 @@ let get_numeric_value key a_map =
 
 ## Variant Types and a Custom Order
 
-You define your own types with variants. Each variant is a named constructor. The file `source-code/Pure/my_colors.ml` defines a color type and sorts values by a rule of its own:
+You define your own types with variants. Each variant is a named constructor. The file `source-code/pure/my_colors.ml` defines a color type and sorts values by a rule of its own:
 
 ```ocaml
 type my_colors = Orange | Red | Blue | Green | Silver

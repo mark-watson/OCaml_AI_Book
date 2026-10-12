@@ -1,3 +1,5 @@
+val default_model : string
+val endpoint_for : string -> string
 val request_json :
   ?temperature:float -> ?max_output_tokens:int -> string -> Yojson.Safe.t
 

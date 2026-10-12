@@ -22,9 +22,15 @@ let test_request_shape () =
   in
   Alcotest.(check string) "prompt embedded" "hi" text
 
+let test_endpoint () =
+  Alcotest.(check string) "endpoint"
+    "https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash:generateContent"
+    (Gemini.endpoint_for Gemini.default_model)
+
 let () =
   Alcotest.run "gemini"
     [ ( "codec",
         [ Alcotest.test_case "text" `Quick test_text;
           Alcotest.test_case "blocked" `Quick test_blocked;
-          Alcotest.test_case "request" `Quick test_request_shape ] ) ]
+          Alcotest.test_case "request" `Quick test_request_shape;
+          Alcotest.test_case "endpoint" `Quick test_endpoint ] ) ]

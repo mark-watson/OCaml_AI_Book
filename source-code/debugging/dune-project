@@ -1,1 +1,22 @@
 (lang dune 3.0)
+
+(name debugging)
+
+(generate_opam_files true)
+
+(source
+ (github mark-watson/ocaml_ai_book))
+
+(license Apache-2.0)
+
+(authors "Mark Watson")
+
+(maintainers "Mark Watson")
+
+(package
+ (name debugging)
+ (allow_empty)
+ (synopsis "Trace-style debugging with a lazy prime sieve")
+ (depends
+  (ocaml (>= 5.3))
+  dune))

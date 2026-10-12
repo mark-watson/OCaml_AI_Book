@@ -1,6 +1,6 @@
 # Input/Output and Command-Line Applications
 
-OCaml has no separate I/O type. Reading a line, opening a file, and printing to the console are ordinary function calls that you sequence with `;` or `let ... in`. That makes I/O code short and direct. This chapter covers the everyday moves: read a file, read from the console, handle a missing file, and drive an interactive loop. The code comes from two example directories, `source-code/ImPure/` and `source-code/CommandLineApp/`, which share a small `util.ml` of helpers.
+OCaml has no separate I/O type. Reading a line, opening a file, and printing to the console are ordinary function calls that you sequence with `;` or `let ... in`. That makes I/O code short and direct. This chapter covers the everyday moves: read a file, read from the console, handle a missing file, and drive an interactive loop. The code comes from two example directories, `source-code/impure/` and `source-code/command_line_app/`, which share a small `util.ml` of helpers.
 
 ## Reading a Whole File
 
@@ -30,7 +30,7 @@ The `|>` pipe reads left to right: turn every whitespace character into a space,
 
 ## Mapping Over the Result of a Read
 
-The file `source-code/ImPure/fmap_example.ml` reads a file into words and then transforms the result. Because the read just returns a list, you map an ordinary function over it:
+The file `source-code/impure/fmap_example.ml` reads a file into words and then transforms the result. Because the read just returns a list, you map an ordinary function over it:
 
 ```ocaml
 let file_to_words path = Util.words (Util.read_file path)
@@ -50,7 +50,7 @@ let () =
 
 ## Words Two Files Share
 
-The file `source-code/ImPure/common_words.ml` finds the words that appear in both of two files. It uses the standard `Set` functor, applied to the `String` module:
+The file `source-code/impure/common_words.ml` finds the words that appear in both of two files. It uses the standard `Set` functor, applied to the `String` module:
 
 ```ocaml
 module SS = Set.Make (String)
@@ -66,7 +66,7 @@ Each file becomes a set of lower-cased words. `SS.inter` is set intersection: th
 
 ## Reading From the Console
 
-Console input uses `read_line`, which returns the next line without its newline. When there is no more input, `read_line` raises `End_of_file` rather than returning an error value. To read an integer safely, parse the line with `int_of_string_opt`, which returns an `option`, and loop on bad input. From `source-code/ImPure/do_let_example.ml`:
+Console input uses `read_line`, which returns the next line without its newline. When there is no more input, `read_line` raises `End_of_file` rather than returning an error value. To read an integer safely, parse the line with `int_of_string_opt`, which returns an `option`, and loop on bad input. From `source-code/impure/do_let_example.ml`:
 
 ```ocaml
 let rec read_int () =
@@ -82,7 +82,7 @@ let rec read_int () =
 
 ## An Interactive Loop
 
-The file `source-code/CommandLineApp/command_line1.ml` reads lines and echoes them upper-cased until the user types `exit` or `quit`, or reaches end of input:
+The file `source-code/command_line_app/command_line1.ml` reads lines and echoes them upper-cased until the user types `exit` or `quit`, or reaches end of input:
 
 ```ocaml
 let rec loop () =
@@ -111,7 +111,7 @@ let append_file path s =
 
 ## A Guessing Game With State
 
-The file `source-code/CommandLineApp/game_loop1.ml` asks you to guess a number from 1 to 4. It carries two pieces of state, the target and the try count, in a record:
+The file `source-code/command_line_app/game_loop1.ml` asks you to guess a number from 1 to 4. It carries two pieces of state, the target and the try count, in a record:
 
 ```ocaml
 type game_state = { number_to_guess : int; num_tries : int }
@@ -142,7 +142,7 @@ This version seeds the target from the clock with `Unix.time`. The companion `ga
 
 ## Handling a Missing File
 
-You should catch only the error you expect, not every exception. When a file is missing or unreadable, `open_in` raises `Sys_error`. The file `source-code/CommandLineApp/read_text_file_error_handling.ml` catches just that one:
+You should catch only the error you expect, not every exception. When a file is missing or unreadable, `open_in` raises `Sys_error`. The file `source-code/command_line_app/read_text_file_error_handling.ml` catches just that one:
 
 ```ocaml
 let safe_file_reader path =
@@ -159,7 +159,7 @@ The `try ... with` form runs the body and matches only `Sys_error`. Any other ex
 Build either directory and run the programs by name:
 
 ```bash
-cd source-code/CommandLineApp
+cd source-code/command_line_app
 dune build
 dune exec ./command_line2.exe          # type lines; they append to temp.txt
 dune exec ./read_text_file.exe         # read temp.txt back

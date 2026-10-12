@@ -4,8 +4,7 @@
 
 open Lwt.Syntax
 
-let endpoint =
-  "https://generativelanguage.googleapis.com/v1/models/gemini-2.5-flash:generateContent"
+let endpoint = Chat.endpoint_for Chat.default_model
 
 let call_gemini ~api_key prompt =
   let body = Yojson.Safe.to_string (Chat.gemini_request prompt) in

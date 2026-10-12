@@ -1,6 +1,13 @@
 (* JSON codec for the Gemini generateContent API. The Haskell version derived
    FromJSON/ToJSON via Generics; here we build and read the JSON by hand. *)
 
+(* The model is named once here; change it to try another Gemini model. *)
+let default_model = "gemini-3.5-flash"
+
+let endpoint_for model =
+  "https://generativelanguage.googleapis.com/v1beta/models/" ^ model
+  ^ ":generateContent"
+
 let request_json ?(temperature = 0.1) ?(max_output_tokens = 800) prompt =
   `Assoc
     [ ( "contents",

@@ -1,1 +1,24 @@
 (lang dune 3.0)
+
+(name dataframe_example)
+
+(generate_opam_files true)
+
+(source
+ (github mark-watson/ocaml_ai_book))
+
+(license Apache-2.0)
+
+(authors "Mark Watson")
+
+(maintainers "Mark Watson")
+
+(package
+ (name dataframe_example)
+ (allow_empty)
+ (synopsis "A small dataframe over the csv library")
+ (depends
+  (ocaml (>= 5.3))
+  dune
+  csv
+  (alcotest :with-test)))

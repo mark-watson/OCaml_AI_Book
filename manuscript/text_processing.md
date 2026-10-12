@@ -1,10 +1,10 @@
 # Text Processing and DataFrames
 
-Most data work starts with cleaning text and reading tables. This chapter covers both. First it cleans free text and reads CSV and JSON, from `source-code/TextProcessing/`. Then it builds a small dataframe and runs a real analysis over a housing dataset, from `source-code/dataframe_example/`.
+Most data work starts with cleaning text and reading tables. This chapter covers both. First it cleans free text and reads CSV and JSON, from `source-code/text_processing/`. Then it builds a small dataframe and runs a real analysis over a housing dataset, from `source-code/dataframe_example/`.
 
 ## Cleaning Free Text
 
-The file `TextProcessing/clean_text.ml` prepares raw text for later processing. It does three things: it pushes spaces around punctuation so words and marks separate cleanly, it drops noise characters, and it removes common stop words.
+The file `text_processing/clean_text.ml` prepares raw text for later processing. It does three things: it pushes spaces around punctuation so words and marks separate cleanly, it drops noise characters, and it removes common stop words.
 
 The noise characters are a plain list, and `substitute_noise_characters` turns each one into a space:
 
@@ -70,7 +70,7 @@ It splits into words and keeps only the ones that are not stop words, comparing 
 
 ## Reading CSV
 
-The `csv` library reads a comma-separated file into a list of rows, where each row is a list of string cells. The file `TextProcessing/test_csv.ml` loads a file and prints it, guarding against a parse error:
+The `csv` library reads a comma-separated file into a list of rows, where each row is a list of string cells. The file `text_processing/test_csv.ml` loads a file and prints it, guarding against a parse error:
 
 ```ocaml
 let read_csv_file fname =
@@ -92,7 +92,7 @@ match c with
 
 ## Round-Tripping JSON
 
-For JSON the book uses [Yojson](https://github.com/ocaml-community/yojson) everywhere. A JSON value is a polymorphic variant: `` `Assoc `` for an object, `` `String `` for text, and so on. The file `TextProcessing/test_json.ml` encodes a record to JSON and reads it back:
+For JSON the book uses [Yojson](https://github.com/ocaml-community/yojson) everywhere. A JSON value is a polymorphic variant: `` `Assoc `` for an object, `` `String `` for text, and so on. The file `text_processing/test_json.ml` encodes a record to JSON and reads it back:
 
 ```ocaml
 type person = { name : string; email : string }

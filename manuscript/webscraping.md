@@ -1,6 +1,6 @@
 # Web Scraping
 
-Web scraping is two jobs: fetch a page over HTTP, then pull the parts you want out of its HTML. The example in `source-code/WebScraping/` does both. It uses [Cohttp](https://github.com/mirage/ocaml-cohttp) with a TLS backend to fetch a page over HTTPS, and [lambdasoup](https://github.com/aantron/lambdasoup) to parse the HTML and select elements with CSS selectors.
+Web scraping is two jobs: fetch a page over HTTP, then pull the parts you want out of its HTML. The example in `source-code/web_scraping/` does both. It uses [Cohttp](https://github.com/mirage/ocaml-cohttp) with a TLS backend to fetch a page over HTTPS, and [lambdasoup](https://github.com/aantron/lambdasoup) to parse the HTML and select elements with CSS selectors.
 
 ## Parsing HTML
 
@@ -91,7 +91,7 @@ let () =
 ## Running It
 
 ```bash
-cd source-code/WebScraping
+cd source-code/web_scraping
 dune build
 dune exec ./bin/main.exe
 dune runtest

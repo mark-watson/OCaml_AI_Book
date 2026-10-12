@@ -1,4 +1,4 @@
 edit:
 	open preface.md tutorial.md functional.md io_cli.md testing.md \
 	  symbolic_math.md text_processing.md nlp.md database.md rdf_sparql.md \
-	  webscraping.md web_apps.md llm.md search.md kgn.md games.md conclusion.md
+	  webscraping.md web_apps.md llm.md search.md kgn.md games.md neural_networks.md conclusion.md

@@ -1,0 +1,28 @@
+(lang dune 3.0)
+
+(name web_scraping)
+
+(generate_opam_files true)
+
+(source
+ (github mark-watson/ocaml_ai_book))
+
+(license Apache-2.0)
+
+(authors "Mark Watson")
+
+(maintainers "Mark Watson")
+
+(package
+ (name web_scraping)
+ (allow_empty)
+ (synopsis "HTML scraping with lambdasoup and cohttp")
+ (depends
+  (ocaml (>= 5.3))
+  dune
+  cohttp-lwt-unix
+  lambdasoup
+  lwt
+  tls-lwt
+  uri
+  (alcotest :with-test)))

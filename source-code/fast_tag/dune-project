@@ -1,0 +1,23 @@
+(lang dune 3.0)
+
+(name fast_tag)
+
+(generate_opam_files true)
+
+(source
+ (github mark-watson/ocaml_ai_book))
+
+(license Apache-2.0)
+
+(authors "Mark Watson")
+
+(maintainers "Mark Watson")
+
+(package
+ (name fast_tag)
+ (allow_empty)
+ (synopsis "A simplified Brill part-of-speech tagger")
+ (depends
+  (ocaml (>= 5.3))
+  dune
+  (alcotest :with-test)))

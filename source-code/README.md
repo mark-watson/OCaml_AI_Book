@@ -11,10 +11,19 @@ opam install dune yojson cohttp-lwt-unix lwt tls-lwt uri \
   alcotest csv lambdasoup caqti caqti-lwt caqti-driver-sqlite3 dream
 ```
 
+To install only one example's libraries, use its generated `.opam` file:
+
+```bash
+cd webchat
+opam install . --deps-only --with-test
+```
+
+Each `dune-project` declares the example's dependencies; dune regenerates the `.opam` file on every build.
+
 ## Build and run one example
 
 ```bash
-cd Pure
+cd pure
 dune build
 dune exec ./simple.exe
 ```
@@ -35,7 +44,7 @@ dune runtest
 | Alcotest | Unit tests |
 | Csv | CSV read and write |
 | Lambdasoup | HTML scraping with CSS selectors |
-| Caqti | SQLite access |
+| Caqti | SQLite access (linked as `caqti.classic`, which works with Caqti 2.3 and 3.x) |
 
 ## License
 

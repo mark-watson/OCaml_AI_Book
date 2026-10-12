@@ -1,0 +1,22 @@
+(lang dune 3.0)
+
+(name pure)
+
+(generate_opam_files true)
+
+(source
+ (github mark-watson/ocaml_ai_book))
+
+(license Apache-2.0)
+
+(authors "Mark Watson")
+
+(maintainers "Mark Watson")
+
+(package
+ (name pure)
+ (allow_empty)
+ (synopsis "Pattern matching, branching, let bindings, map, composition, variant types")
+ (depends
+  (ocaml (>= 5.3))
+  dune))

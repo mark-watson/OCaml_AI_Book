@@ -1,0 +1,4 @@
+(test
+ (name test_db)
+ (libraries db caqti.classic caqti-lwt caqti-lwt.unix caqti-driver-sqlite3 uri lwt.unix
+   alcotest))

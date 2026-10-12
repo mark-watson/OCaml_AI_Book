@@ -18,9 +18,15 @@ let test_request () =
   in
   Alcotest.(check string) "prompt embedded" "q" text
 
+let test_endpoint () =
+  Alcotest.(check string) "endpoint"
+    "https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash:generateContent"
+    (Chat.endpoint_for Chat.default_model)
+
 let () =
   Alcotest.run "webchat"
     [ ( "chat",
         [ Alcotest.test_case "response text" `Quick test_text;
           Alcotest.test_case "prompt parse" `Quick test_prompt;
-          Alcotest.test_case "request shape" `Quick test_request ] ) ]
+          Alcotest.test_case "request shape" `Quick test_request;
+          Alcotest.test_case "endpoint" `Quick test_endpoint ] ) ]

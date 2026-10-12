@@ -1,6 +1,6 @@
 # Natural Language Processing
 
-This chapter builds two natural language tools. The first, in `source-code/FastTag/`, is a part-of-speech tagger: it labels each word in a sentence as a noun, verb, adjective, and so on. The second, in `source-code/NlpTool/`, is a larger toolkit that categorizes text, summarizes it, and finds the names of people, companies, and countries. Both are rule-and-lexicon systems, not neural networks, so you can read every decision they make.
+This chapter builds two natural language tools. The first, in `source-code/fast_tag/`, is a part-of-speech tagger: it labels each word in a sentence as a noun, verb, adjective, and so on. The second, in `source-code/nlp_tool/`, is a larger toolkit that categorizes text, summarizes it, and finds the names of people, companies, and countries. Both are rule-and-lexicon systems, not neural networks, so you can read every decision they make.
 
 ## A Part-of-Speech Tagger
 
@@ -72,7 +72,7 @@ let tag tokens = fix_tags (substitute ("" :: tokens))
 Run the demo on a sample sentence:
 
 ```bash
-cd source-code/FastTag
+cd source-code/fast_tag
 dune build
 dune exec ./bin/main.exe
 ```
@@ -81,7 +81,7 @@ It prints each word paired with its tag: determiners as `DT`, nouns as `NN`, pas
 
 ## An NLP Toolkit
 
-The `NlpTool` example is a set of modules that share a small foundation. The command-line program loads its data, then categorizes, summarizes, and extracts names from whatever you type. The modules live under one library named `Nlp`.
+The `nlp_tool` example is a set of modules that share a small foundation. The command-line program loads its data, then categorizes, summarizes, and extracts names from whatever you type. The modules live under one library named `Nlp`.
 
 ### Tokenizing and N-grams
 
@@ -250,7 +250,7 @@ Printf.printf "people:\t%s\n" (show_entities (Entities.entity_names people spwkc
 Note that categorization uses lower-cased words, while entity detection uses `split_words_keep_case` so names keep their capitals. Run it from the project root so the data files resolve:
 
 ```bash
-cd source-code/NlpTool
+cd source-code/nlp_tool
 dune build
 dune exec ./bin/main.exe
 dune runtest

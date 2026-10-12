@@ -1,0 +1,2 @@
+(executables
+ (names state1 state_effects))

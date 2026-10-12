@@ -1,13 +1,13 @@
 # Testing OCaml Code with Alcotest
 
-Every example in this book ships with tests, and they all use the same library: [Alcotest](https://github.com/mirage/alcotest), a small, clear test framework. This chapter shows the pattern with the example in `source-code/Testing/`: a tiny library module and a test suite over it. Once you see the shape here, every other test directory in the book will read the same way.
+Every example in this book ships with tests, and they all use the same library: [Alcotest](https://github.com/mirage/alcotest), a small, clear test framework. This chapter shows the pattern with the example in `source-code/testing/`: a tiny library module and a test suite over it. Once you see the shape here, every other test directory in the book will read the same way.
 
 ## Project Layout: Library, Program, and Tests
 
 A dune project splits into three parts, each in its own directory with its own `dune` file:
 
 ```
-Testing/
+testing/
 ├── src/my_colors.ml    <- the library implementation
 ├── src/my_colors.mli   <- the library's public interface
 ├── bin/main.ml         <- a program that uses the library
@@ -132,7 +132,7 @@ let () =
 `test_case` takes a label, a speed level (`` `Quick `` or `` `Slow `` so you can skip slow tests when you want a fast run), and the test function. Run the whole thing with:
 
 ```bash
-cd source-code/Testing
+cd source-code/testing
 dune runtest
 ```
 

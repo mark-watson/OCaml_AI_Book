@@ -1,6 +1,6 @@
 # Networking and Web Applications
 
-This chapter moves from a single program to programs that talk to each other. It starts with a raw TCP server and client built on Lwt sockets, in `source-code/ClientServer/`. Then it builds two web applications on [Dream](https://aantron.github.io/dream/), a modern OCaml web framework: a "web view" app with a JavaScript bridge, in `source-code/webview/`, and a chat app that forwards prompts to the Google Gemini API, in `source-code/webchat/`.
+This chapter moves from a single program to programs that talk to each other. It starts with a raw TCP server and client built on Lwt sockets, in `source-code/client_server/`. Then it builds two web applications on [Dream](https://aantron.github.io/dream/), a modern OCaml web framework: a "web view" app with a JavaScript bridge, in `source-code/webview/`, and a chat app that forwards prompts to the Google Gemini API, in `source-code/webchat/`.
 
 ## A TCP Server and Client
 
@@ -55,7 +55,7 @@ Printf.printf "Response: %s\n" (Bytes.sub_string buf 0 n);
 Run the server in one terminal and the client in another:
 
 ```bash
-cd source-code/ClientServer
+cd source-code/client_server
 dune exec ./server.exe    # terminal 1
 dune exec ./client.exe    # terminal 2
 ```
@@ -173,7 +173,7 @@ let text_of_json json =
   | exception _ -> Error "Failed to parse Gemini response"
 ```
 
-`text_of_json` returns a `result`, and its final `exception _` case turns a malformed response into an `Error` rather than a crash. The server posts the request to Gemini and returns the reply as JSON:
+`text_of_json` returns a `result`, and its final `exception _` case turns a malformed response into an `Error` rather than a crash. The codec also names the model once, `let default_model = "gemini-3.5-flash"`, and `endpoint_for` builds the request URL from it, so the server's `endpoint` is `Chat.endpoint_for Chat.default_model`. The server posts the request to Gemini and returns the reply as JSON:
 
 ```ocaml
 let call_gemini ~api_key prompt =

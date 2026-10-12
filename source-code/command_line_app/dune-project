@@ -1,0 +1,22 @@
+(lang dune 3.0)
+
+(name command_line_app)
+
+(generate_opam_files true)
+
+(source
+ (github mark-watson/ocaml_ai_book))
+
+(license Apache-2.0)
+
+(authors "Mark Watson")
+
+(maintainers "Mark Watson")
+
+(package
+ (name command_line_app)
+ (allow_empty)
+ (synopsis "Command-line I/O, file handling, a guessing game")
+ (depends
+  (ocaml (>= 5.3))
+  dune))

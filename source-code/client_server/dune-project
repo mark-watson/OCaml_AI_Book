@@ -1,0 +1,23 @@
+(lang dune 3.0)
+
+(name client_server)
+
+(generate_opam_files true)
+
+(source
+ (github mark-watson/ocaml_ai_book))
+
+(license Apache-2.0)
+
+(authors "Mark Watson")
+
+(maintainers "Mark Watson")
+
+(package
+ (name client_server)
+ (allow_empty)
+ (synopsis "A TCP client and server with Lwt sockets")
+ (depends
+  (ocaml (>= 5.3))
+  dune
+  lwt))

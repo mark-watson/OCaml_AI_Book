@@ -1,0 +1,23 @@
+(lang dune 3.0)
+
+(name testing)
+
+(generate_opam_files true)
+
+(source
+ (github mark-watson/ocaml_ai_book))
+
+(license Apache-2.0)
+
+(authors "Mark Watson")
+
+(maintainers "Mark Watson")
+
+(package
+ (name testing)
+ (allow_empty)
+ (synopsis "Unit testing with Alcotest and a custom ordering")
+ (depends
+  (ocaml (>= 5.3))
+  dune
+  (alcotest :with-test)))

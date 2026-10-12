@@ -1,0 +1,30 @@
+name: Build and test examples
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  test:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: ocaml/setup-ocaml@v3
+        with:
+          ocaml-compiler: "5.5"
+
+      # Keep this list in step with the install line in README.md.
+      - name: Install libraries
+        run: |
+          opam install -y dune yojson cohttp-lwt-unix lwt tls-lwt uri \
+            alcotest csv lambdasoup caqti caqti-lwt caqti-driver-sqlite3 dream
+
+      - name: Build and test every example
+        working-directory: source-code
+        run: opam exec -- make test

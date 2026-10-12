@@ -1,0 +1,24 @@
+(lang dune 3.0)
+
+(name text_processing)
+
+(generate_opam_files true)
+
+(source
+ (github mark-watson/ocaml_ai_book))
+
+(license Apache-2.0)
+
+(authors "Mark Watson")
+
+(maintainers "Mark Watson")
+
+(package
+ (name text_processing)
+ (allow_empty)
+ (synopsis "Clean free text, drop stop words, read CSV and JSON")
+ (depends
+  (ocaml (>= 5.3))
+  dune
+  csv
+  yojson))

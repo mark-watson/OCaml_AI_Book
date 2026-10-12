@@ -1,6 +1,6 @@
 # SQLite Databases
 
-This chapter stores and reads data in a SQLite database. SQLite needs no server: the library reads and writes an ordinary file, so it is a fine choice for a local application or a cache. The example is in `source-code/Database-sqlite/`, and it uses [Caqti](https://github.com/paurkedal/ocaml-caqti), a library that turns a SQL statement into a typed OCaml value.
+This chapter stores and reads data in a SQLite database. SQLite needs no server: the library reads and writes an ordinary file, so it is a fine choice for a local application or a cache. The example is in `source-code/database_sqlite/`, and it uses [Caqti](https://github.com/paurkedal/ocaml-caqti), a library that turns a SQL statement into a typed OCaml value.
 
 Two ideas in this chapter are new and worth your attention: Caqti's typed queries, and Lwt, OCaml's library for asynchronous code. Both come back in the networking and web chapters, so it pays to meet them here on a small example.
 
@@ -96,18 +96,21 @@ The URI `sqlite3:test.db` picks the SQLite driver and the file `test.db`. `Caqti
 
 ## Building and Running
 
-The `dune` files list the driver as a dependency. The library needs `caqti` and `caqti-lwt`; the program adds the SQLite driver and the Lwt Unix backend:
+The `dune` files list the driver as a dependency. The library needs `caqti.classic` and `caqti-lwt`; the program adds the SQLite driver and the Lwt Unix backend:
 
 ```
 (executable
  (name main)
- (libraries db caqti-lwt caqti-lwt.unix caqti-driver-sqlite3 uri lwt.unix))
+ (libraries db caqti.classic caqti-lwt caqti-lwt.unix caqti-driver-sqlite3
+   uri lwt.unix))
 ```
+
+The `.classic` suffix matters. Caqti 3.0 introduced a new API under the plain `caqti` library name and moved the API used in this chapter, built around `Caqti_request` and `Caqti_type`, to `caqti.classic`. Linking `caqti.classic` builds the example with Caqti 2.3 or any 3.x release.
 
 Build and run it:
 
 ```bash
-cd source-code/Database-sqlite
+cd source-code/database_sqlite
 dune build
 dune exec ./bin/main.exe
 dune runtest

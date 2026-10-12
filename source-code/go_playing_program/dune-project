@@ -1,0 +1,23 @@
+(lang dune 3.0)
+
+(name go_playing_program)
+
+(generate_opam_files true)
+
+(source
+ (github mark-watson/ocaml_ai_book))
+
+(license Apache-2.0)
+
+(authors "Mark Watson")
+
+(maintainers "Mark Watson")
+
+(package
+ (name go_playing_program)
+ (allow_empty)
+ (synopsis "A Go board engine (captures, ko, scoring) with a self-play agent")
+ (depends
+  (ocaml (>= 5.3))
+  dune
+  (alcotest :with-test)))

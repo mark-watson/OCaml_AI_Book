@@ -1,1 +1,24 @@
 (lang dune 3.0)
+
+(name knowledge_graph_creator)
+
+(generate_opam_files true)
+
+(source
+ (github mark-watson/ocaml_ai_book))
+
+(license Apache-2.0)
+
+(authors "Mark Watson")
+
+(maintainers "Mark Watson")
+
+(package
+ (name knowledge_graph_creator)
+ (allow_empty)
+ (synopsis "Generate RDF triples and Neo4j Cypher from text files")
+ (depends
+  (ocaml (>= 5.3))
+  dune
+  yojson
+  (alcotest :with-test)))

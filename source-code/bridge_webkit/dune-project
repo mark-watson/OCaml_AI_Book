@@ -1,0 +1,26 @@
+(lang dune 3.0)
+
+(name bridge_webkit)
+
+(generate_opam_files true)
+
+(source
+ (github mark-watson/ocaml_ai_book))
+
+(license Apache-2.0)
+
+(authors "Mark Watson")
+
+(maintainers "Mark Watson")
+
+(package
+ (name bridge_webkit)
+ (allow_empty)
+ (synopsis "A Dream web UI over the bridge engine")
+ (depends
+  (ocaml (>= 5.3))
+  dune
+  dream
+  lwt
+  yojson
+  (alcotest :with-test)))
